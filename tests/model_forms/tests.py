@@ -1423,6 +1423,23 @@ class ModelFormBasicTests(TestCase):
 <option value="3">Live</option>
 </select></li>''' % (self.w_woodward.pk, w_bernstein.pk, self.w_royko.pk, self.c1.pk, self.c2.pk, self.c3.pk, c4.pk))
 
+    def test_disabled_field_validation(self):
+        class SimpleForm(forms.Form):
+            pass
+
+
+
+        form = SimpleForm()
+        form.fields['choices'] = forms.ModelMultipleChoiceField(queryset=Writer.objects.all(), disabled=True, required=False)
+        #form.fields['choices'].initial = []
+        form.full_clean()
+        self.assertEqual(form.errors, {})
+        form.fields['choices'].initial = ['a']
+        form.full_clean()
+        self.assertEqual(form.errors, {})
+
+
+
 
 class ModelChoiceFieldTests(TestCase):
     def setUp(self):
